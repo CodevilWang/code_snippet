@@ -1,0 +1,11 @@
+-O3
+-std=c++11
+-stdlib=libc++
+-lc++abi
+-fno-exceptions
+-fno-rtti
+-Wall
+-pedantic
+-Werror
+-I../../../benchmark/include
+-L../../../benchmark/build/src/
