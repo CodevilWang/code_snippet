@@ -9,6 +9,17 @@ static void bench_push_back(benchmark::State &state) {
     }
 }
 BENCHMARK(bench_push_back);
+
+static void bench_push_back_reserve(benchmark::State &state) {
+    while (state.KeepRunning()) {
+        std::vector<int> v;
+        v.reserve(1);
+        v.push_back(42);
+    }
+}
+BENCHMARK(bench_push_back_reserve);
+
+
 BENCHMARK_MAIN();
 
 /* vim: set expandtab ts=2 sw=2 sts=2 tw=80: */
