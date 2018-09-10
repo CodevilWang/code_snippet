@@ -6,9 +6,12 @@ all:
 	g++ openmp_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o openmp_bench -lbenchmark
 	g++ multi_thread_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o multi_thread_bench -lbenchmark -lpthread
 	g++ array_size_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o array_size_benchmark -lbenchmark
+div_bench:
+	g++ std_div_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o std_div_benchmark -lbenchmark
 clean:
-	@rm vector_bench
-	@rm openmp_bench
-	@rm multi_thread_bench 
-	@rm array_size_benchmark
+	-rm vector_bench
+	-rm openmp_bench
+	-rm multi_thread_bench 
+	-rm array_size_benchmark
+	-rm std_div_benchmark 
 
