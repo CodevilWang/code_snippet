@@ -20,6 +20,11 @@
 void do_read(evutil_socket_t fd, short events, void *arg);
 void do_write(evutil_socket_t fd, short events, void *arg);
 
+void* malloc_func(size_t sz) {
+    printf("in malloc func[%lu]\n", sz);
+    return malloc(sz);
+}
+
 char
 rot13_char(char c)
 {
@@ -165,6 +170,7 @@ run(void)
     struct sockaddr_in sin;
     struct event_base *base;
     struct event *listener_event;
+    event_set_mem_functions(malloc_func, realloc, free);
 
     base = event_base_new();
     if (!base)
