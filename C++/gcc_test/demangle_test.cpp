@@ -3,11 +3,13 @@
 #include <stdio.h>
 #include <cxxabi.h>
 #include <string>
+#include <limits>
 int main() {
     std::string str = {"abcdef"};
     int status;
     printf("%s\n", typeid(str).name());
     printf("%s\n", abi::__cxa_demangle(typeid(str).name(), 0, 0, &status));
+    printf("%d\n", std::numeric_limits<uint64_t>::digits);
     return 0;
 }
 
