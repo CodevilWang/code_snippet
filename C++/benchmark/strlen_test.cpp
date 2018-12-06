@@ -83,6 +83,37 @@ static void bench_generate_str3(benchmark::State &state) {
 }
 BENCHMARK(bench_generate_str3);
 
+int strlen_new(const char* str, int prev_len) {
+    return str[0] == '\0' ? prev_len :
+           str[1] == '\0' ? prev_len + 1 :
+           str[2] == '\0' ? prev_len + 2 :
+           str[3] == '\0' ? prev_len + 3 :
+           str[4] == '\0' ? prev_len + 4 :
+           str[5] == '\0' ? prev_len + 5 :
+           str[6] == '\0' ? prev_len + 6 :
+           str[7] == '\0' ? prev_len + 7 :
+           strlen_new(str + 8, prev_len + 8);
+}
+
+static void bench_strlen(benchmark::State &state) {
+    std::string out_str;
+    generate_str_c11(1000, &out_str);
+    while (state.KeepRunning()) {
+        benchmark::DoNotOptimize(strlen(out_str.c_str()));
+    }
+}
+BENCHMARK(bench_strlen);
+
+// slow a lot
+static void bench_strlen_new(benchmark::State &state) {
+    std::string out_str;
+    generate_str_c11(1000, &out_str);
+    while (state.KeepRunning()) {
+        benchmark::DoNotOptimize(strlen_new(out_str.c_str(), 0));
+    }
+}
+BENCHMARK(bench_strlen_new);
+
 BENCHMARK_MAIN();
 
 /* vim: set expandtab ts=2 sw=2 sts=2 tw=80: */
