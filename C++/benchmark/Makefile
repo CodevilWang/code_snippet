@@ -9,6 +9,7 @@ all:
 	g++ openmp_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o openmp_bench -lbenchmark
 	g++ multi_thread_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o multi_thread_bench -lbenchmark -lpthread
 	g++ array_size_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o array_size_benchmark -lbenchmark
+	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark
 div_bench:
 	g++ std_div_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o std_div_benchmark -lbenchmark
 generate_test:
@@ -22,6 +23,9 @@ atomic_benchmark:
 tbb_current_vector_benchmark:
 	g++ tbb_current_vector_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o tbb_current_vector_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS)
 
+strlen_test:
+	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS) -std=c++17
+
 clean:
 	-rm vector_bench
 	-rm openmp_bench
@@ -33,3 +37,4 @@ clean:
 	-rm array_add_benchmark 
 	-rm atomic_benchmark 
 	-rm tbb_current_vector_benchmark 
+	-rm strlen_test_benchmark 
