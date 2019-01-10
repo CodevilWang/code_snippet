@@ -22,6 +22,13 @@ int main() {
     p.setValue(10);
     std::this_thread::sleep_for(std::chrono::milliseconds(5000));
     t.join();
+
+    auto f1 = folly::makeFuture(1).then([]() {
+                    return 10;
+                }).then([](int v) {
+                        printf("value is %d\n", v);
+                });
+
     return 0;
 }
 
