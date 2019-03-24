@@ -9,7 +9,9 @@ all:
 	g++ openmp_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o openmp_bench -lbenchmark
 	g++ multi_thread_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o multi_thread_bench -lbenchmark -lpthread
 	g++ array_size_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o array_size_benchmark -lbenchmark
-	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark
+	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark -std=c++17
+	g++ tbb_current_vector_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o tbb_current_vector_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS)
+	g++ current_inc_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o current_inc_benchmark -lbenchmark $(FOLLY_DEPS) -lpthread
 div_bench:
 	g++ std_div_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o std_div_benchmark -lbenchmark
 generate_test:
@@ -25,6 +27,8 @@ tbb_current_vector_benchmark:
 
 strlen_test:
 	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS) -std=c++17
+current_inc:
+	g++ current_inc_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o current_inc_benchmark -lbenchmark $(FOLLY_DEPS)
 
 clean:
 	-rm vector_bench
@@ -38,3 +42,4 @@ clean:
 	-rm atomic_benchmark 
 	-rm tbb_current_vector_benchmark 
 	-rm strlen_test_benchmark 
+	-rm current_inc
