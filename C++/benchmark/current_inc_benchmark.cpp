@@ -1,8 +1,10 @@
+// Copyright 2019 All Rights Reserved.
+// Author: taoran07@baidu.com 
 #include <atomic>
 #include <mutex>
 #include <pthread.h>
 #include "benchmark/benchmark.h"
-#include "folly/synchronization/MicroSpinLock.h"
+#include "fast_pthread_mutex.h"
 
 static uint64_t value;
 static std::mutex M;
@@ -19,7 +21,7 @@ void BM_mutex_inc(benchmark::State& state) {
 
 static std::atomic<uint64_t> v;
 void BM_atomic_inc(benchmark::State& state) {
-  if (state.thread_index == 0) v = 0; 
+  if (state.thread_index == 0) v = 0;
   while (state.KeepRunning()) {
     for (int i = 0; i < 1000000; ++i) {
         ++v;
@@ -27,10 +29,10 @@ void BM_atomic_inc(benchmark::State& state) {
   }
 }
 
-// static uint64_t v0; 
+// static uint64_t v0;
 // static pthread_spinlock_t p_spin_l;
 // void BM_pthread_spin_inc(benchmark::State& state) {
-//   if (state.thread_index == 0) v0 = 0; 
+//   if (state.thread_index == 0) v0 = 0;
 //   while (state.KeepRunning()) {
 //     for (int i = 0; i < 1000000; ++i) {
 //         pthread_spin_lock(&p_spin_l);
@@ -40,18 +42,33 @@ void BM_atomic_inc(benchmark::State& state) {
 //   }
 // }
 //
-static uint64_t v0; 
-static folly::MicroSpinLock p_spin_l;
-void BM_microspin_inc(benchmark::State& state) {
+// static uint64_t v0;
+// static folly::MicroSpinLock p_spin_l;
+// void BM_microspin_inc(benchmark::State& state) {
+//   if (state.thread_index == 0) {
+//       v0 = 0;
+//       p_spin_l.init();
+//   }
+//   while (state.KeepRunning()) {
+//     for (int i = 0; i < 1000000; ++i) {
+//         p_spin_l.lock();
+//         ++v0;
+//         p_spin_l.unlock();
+//     }
+//   }
+// }
+
+static uint64_t v1;
+static wmlib::WmlibFastMutex wl_m; 
+void BM_fastm_inc(benchmark::State& state) {
   if (state.thread_index == 0) {
-      v0 = 0; 
-      p_spin_l.init();
+      v1 = 0;
   }
   while (state.KeepRunning()) {
     for (int i = 0; i < 1000000; ++i) {
-        p_spin_l.lock();
-        ++v0;
-        p_spin_l.unlock();
+        wl_m.lock();
+        ++v1;
+        wl_m.unlock();
     }
   }
 }
@@ -67,7 +84,8 @@ BENCHMARK(BM) ARGS(4); \
 BENCHMARK(BM) ARGS(8);
 BENCHMARKS(BM_mutex_inc);
 BENCHMARKS(BM_atomic_inc);
-BENCHMARKS(BM_microspin_inc);
+// BENCHMARKS(BM_microspin_inc);
+BENCHMARKS(BM_fastm_inc);
 // BENCHMARKS(BM_pthread_spin_inc);
 BENCHMARK_MAIN();
 
