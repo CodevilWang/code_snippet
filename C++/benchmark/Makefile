@@ -24,6 +24,8 @@ atomic_benchmark:
 	g++ atomic_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o atomic_benchmark -lbenchmark
 tbb_current_vector_benchmark:
 	g++ tbb_current_vector_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o tbb_current_vector_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS)
+string_ret_bench:
+	g++ string_ret_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o string_ret_bench -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS)
 
 strlen_test:
 	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS) -std=c++17
@@ -43,3 +45,4 @@ clean:
 	-rm tbb_current_vector_benchmark 
 	-rm strlen_test_benchmark 
 	-rm current_inc
+	-rm string_ret_bench
