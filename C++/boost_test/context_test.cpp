@@ -40,7 +40,6 @@ struct input_args
     int * target;
     int task_;
 };
-void input_yield() { ctx::detail::jump_fcontext(&fc_main, 0); }
 
 void input_task(ctx::detail::transfer_t t)
 {
@@ -54,8 +53,7 @@ void input_task(ctx::detail::transfer_t t)
             b_quit = true;
             return;
         }
-
-        input_yield();
+        ctx::detail::jump_fcontext(t.fctx, 0);
     }
     printf("ERROR: should not reach the end of input function\n");
 }
@@ -66,20 +64,22 @@ int main()
     average_args aa = {&share};
     input_args ia = {&aa, &share};
 
-    void* stack_buffer = std::malloc(8192);
-    fc_input = ctx::detail::make_fcontext(stack_buffer, 8192, input_task);
-    ctx::detail::transfer_t t_input({fc_input, &ia});
+    size_t size(102400);
+    void* stack_buffer = std::malloc(size);
+    fc_input = ctx::detail::make_fcontext(stack_buffer, size, input_task);
+    ctx::detail::transfer_t t_input({fc_main, &ia});
 
     // construct the average task
-    void* stack_buffer_avg = std::malloc(8192);
-    fc_avg = ctx::detail::make_fcontext(stack_buffer_avg, 8192, average_task);
-    ctx::detail::transfer_t t_avg({fc_avg, &aa});
+    void* stack_buffer_avg = std::malloc(size);
+    fc_avg = ctx::detail::make_fcontext(stack_buffer_avg, size, average_task);
+    ctx::detail::transfer_t t_avg({fc_main, &aa});
 
     while (!b_quit)
     {
-        ctx::detail::jump_fcontext(&fc_input, t_input.data);
-        ctx::detail::jump_fcontext(&fc_avg, t_avg.data);
-        printf("sum=%d count=%d average=%d\n", aa.sum, aa.count, aa.average);
+        ctx::detail::jump_fcontext(fc_input, &ia);
+        // ctx::detail::jump_fcontext(&fc_avg, t_avg.data);
+        printf("hello\n");
+        // printf("sum=%d count=%d average=%d\n", aa.sum, aa.count, aa.average);
     }
     printf("main: done\n");
     return 0;
