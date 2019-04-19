@@ -8,6 +8,7 @@ int main(int argc, char** argv) {
     google::InitGoogleLogging(argv[0]);
     int a = 10;
     LOG(INFO) << "Found " << a << " apples";
+    LOG(WARNING) << "Found " << a << " apples";
     return 0;
 }
 
