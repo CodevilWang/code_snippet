@@ -15,7 +15,6 @@ struct average_args
     int average;
     int task_;
 };
-void average_yield() { ctx::detail::jump_fcontext(&fc_main, 0); }
 
 void average_task(ctx::detail::transfer_t t)
 {
@@ -28,7 +27,7 @@ void average_task(ctx::detail::transfer_t t)
         args->sum += *args->source;
         ++args->count;
         args->average = args->sum / args->count;
-        average_yield();
+        ctx::detail::jump_fcontext(t.fctx, 0);
     }
 
     printf("ERROR: should not reach the end of average function\n");
@@ -44,16 +43,25 @@ struct input_args
 void input_task(ctx::detail::transfer_t t)
 {
     input_args* pia = (input_args*)t.data;
+    // ctx::detail::transfer_t _t;
+    // bool first = true;
 
     while (true)
     {
         printf("number: ");
-        if (!scanf("%d", pia->target))
+        int ret = scanf("%d", pia->target);
+        if (ret != 1)
         {
             b_quit = true;
             return;
         }
         ctx::detail::jump_fcontext(t.fctx, 0);
+        // if (first) {
+        //     _t = ctx::detail::jump_fcontext(t.fctx, 0);
+        //     first = false;
+        // } else {
+        //     ctx::detail::jump_fcontext(_t.fctx, 0);
+        // }
     }
     printf("ERROR: should not reach the end of input function\n");
 }
@@ -67,22 +75,24 @@ int main()
     size_t size(102400);
     void* stack_buffer = std::malloc(size);
     fc_input = ctx::detail::make_fcontext(stack_buffer, size, input_task);
-    ctx::detail::transfer_t t_input({fc_main, &ia});
 
     // construct the average task
     void* stack_buffer_avg = std::malloc(size);
     fc_avg = ctx::detail::make_fcontext(stack_buffer_avg, size, average_task);
-    ctx::detail::transfer_t t_avg({fc_main, &aa});
+    
+    ctx::detail::transfer_t t_input = {fc_input, 0};
+    ctx::detail::transfer_t t_avg = {fc_avg, 0};
 
     while (!b_quit)
     {
-        ctx::detail::jump_fcontext(fc_input, &ia);
-        // ctx::detail::jump_fcontext(&fc_avg, t_avg.data);
-        printf("hello\n");
-        // printf("sum=%d count=%d average=%d\n", aa.sum, aa.count, aa.average);
+        t_input = ctx::detail::jump_fcontext(t_input.fctx, &ia);
+        t_avg = ctx::detail::jump_fcontext(t_avg.fctx, &aa);
+        // printf("hello\n");
+        printf("sum=%d count=%d average=%d b_quit=%d\n", aa.sum, aa.count, aa.average, b_quit);
     }
     printf("main: done\n");
     return 0;
 }
 
 /* vim: set expandtab ts=2 sw=2 sts=2 tw=80: */
+
