@@ -3,6 +3,7 @@ COMMON_FLAGS=`cat $(FLAG_FILE)`
 OPENMP_FLAGS=-Xpreprocessor -fopenmp -lomp
 TBB_DEPS=-I/usr/local/Cellar/tbb/2018_U5/include/  -L/usr/local/Cellar/tbb/2018_U5/lib/ -ltbb
 FOLLY_DEPS=-I/usr/local/Cellar/folly//2018.08.27.00/include/ -L/usr/local/Cellar/folly//2018.08.27.00/lib/ -lfolly
+EIGEN_INC=-I/usr/local/Cellar/eigen/3.3.7/include/eigen3/
 
 all:
 	g++ vector_bench.cpp $(COMMON_FLAGS) -o vector_bench -lbenchmark
@@ -32,6 +33,12 @@ strlen_test:
 current_inc:
 	g++ current_inc_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o current_inc_benchmark -lbenchmark $(FOLLY_DEPS)
 
+eigen_bench:
+	g++ eigen_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -Wno-unused-variable -o eigen_bench -lbenchmark $(EIGEN_INC)
+
+time_eigen_product:
+	g++ time_eigen_product.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -Wno-unused-variable -o time_eigen_product $(EIGEN_INC) -mavx
+
 clean:
 	-rm vector_bench
 	-rm openmp_bench
@@ -46,3 +53,5 @@ clean:
 	-rm strlen_test_benchmark 
 	-rm current_inc
 	-rm string_ret_bench
+	-rm eigen_bench 
+	-rm time_eigen_product 
