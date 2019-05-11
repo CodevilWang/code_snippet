@@ -9,6 +9,7 @@ all:
 	# $(CXX) future_test.cpp -o future_test -std=c++14 -I/usr/local/Cellar/folly/$(VERSION)/include -L/usr/local/Cellar/folly/$(VERSION)/lib -lfolly /usr/local/opt/glog/lib/libglog.dylib
 	$(CXX) future_vec.cpp -o future_vec -std=c++14
 	$(CXX) rcu_test.cpp -o rcu_test -std=c++14 -I/usr/local/Cellar/folly/$(VERSION)/include -L/usr/local/Cellar/folly/$(VERSION)/lib -lfolly -lpthread /usr/local/opt/glog/lib/libglog.dylib
+	$(CXX) hazptr_test.cpp -o hazptr_test -std=c++14 -I/usr/local/Cellar/folly/$(VERSION)/include -L/usr/local/Cellar/folly/$(VERSION)/lib -lfolly -lpthread /usr/local/opt/glog/lib/libglog.dylib
 clean:
 	@rm fbstring_test
 	# @rm logging_test 
@@ -18,4 +19,5 @@ clean:
 	# @rm future_test 
 	@rm future_vec
 	@rm rcu_test  
+	@rm hazptr_test
 	
