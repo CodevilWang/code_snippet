@@ -28,7 +28,7 @@ void writer() {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         IntArray* new_ptr = new IntArray();
         for (int i = 0; i < ELE_NUM; ++i) {
-            new_ptr->data[i] = cursor.load(); 
+            new_ptr->data[i] = cursor.load();
         }
         cursor += 1;
         IntArray* cur_ptr = data.exchange(new_ptr);
