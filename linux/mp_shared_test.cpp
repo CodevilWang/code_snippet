@@ -20,6 +20,7 @@
 #include <sys/mman.h>
 #include <sys/wait.h>
 #include <pthread.h>
+#include <vector>
 
 void* create_shared_memory(size_t size) {
   // Our memory buffer will be readable and writable:
@@ -34,7 +35,7 @@ void* create_shared_memory(size_t size) {
 }
 
 static const int PNUM = 3;
-static const int ADDNUM = 100;
+static const int ADDNUM = 1000000000;
 int main() {
     pthread_mutex_t shm_mutex;
     const char* parent_message = "hello";  // parent process will write this message
@@ -65,6 +66,10 @@ int main() {
         return -1;
     }
 
+    int robust = -1;
+    pthread_mutexattr_getrobust(&attr, &robust);
+    printf("robust is %d/%d\n", robust, PTHREAD_MUTEX_ROBUST);
+
     if (pthread_mutex_init(&shm_mutex, &attr) != 0) {
         fprintf(stderr, "pthread_mutexattr_init failed.\n");
         return -1;
@@ -85,12 +90,21 @@ int main() {
     }
 
     if (fork_ret == 0) {
+        usleep(100000);
+        int cur_pid = getpid();
         for (int i = 0; i < ADDNUM; ++i) {
             pthread_mutex_lock(&shm_mutex);
             int* data = (int*)(shmem);
             ++data[0];
             ++data[1];
+            if (cur_pid % 3 == 1) {
+                fprintf(stderr, "cur exit %d\n", cur_pid);
+                return -1;
+            }
             pthread_mutex_unlock(&shm_mutex);
+            if (i % 10000 == 0) {
+                printf("cur %d %d\n", cur_pid, i);
+            }
         }
         return 0;
     }
