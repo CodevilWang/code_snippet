@@ -2,7 +2,7 @@ FLAG_FILE=flags
 COMMON_FLAGS=`cat $(FLAG_FILE)`
 OPENMP_FLAGS=-Xpreprocessor -fopenmp -lomp
 TBB_DEPS=-I/usr/local/Cellar/tbb/2018_U5/include/  -L/usr/local/Cellar/tbb/2018_U5/lib/ -ltbb
-FOLLY_DEPS=-I/usr/local/Cellar/folly//2018.08.27.00/include/ -L/usr/local/Cellar/folly//2018.08.27.00/lib/ -lfolly
+FOLLY_DEPS=-I/usr/local/Cellar/folly/2019.03.18.00_2/include/ -L/usr/local/Cellar/folly/2019.03.18.00_2/lib/ -lfolly
 EIGEN_INC=-I/usr/local/Cellar/eigen/3.3.7/include/eigen3/
 
 all:
@@ -31,7 +31,7 @@ string_ret_bench:
 strlen_test:
 	g++ strlen_test.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o strlen_test_benchmark -lbenchmark $(TBB_DEPS) $(FOLLY_DEPS) -std=c++17
 current_inc:
-	g++ current_inc_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o current_inc_benchmark -lbenchmark $(FOLLY_DEPS)
+	g++ current_inc_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o current_inc_benchmark -lbenchmark $(FOLLY_DEPS) -lpthread
 
 eigen_bench:
 	g++ eigen_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -Wno-unused-variable -o eigen_bench -lbenchmark $(EIGEN_INC)

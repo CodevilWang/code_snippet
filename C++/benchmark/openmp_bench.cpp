@@ -15,13 +15,14 @@ static void bench_add_random(benchmark::State& state) {
             random_engine.seed(random_seed);
             uint64_t res = 0;
             for (size_t i = 0; i < ADD_NUM; ++i) {
-                res += random_engine();
+                // res += random_engine();
+                benchmark::DoNotOptimize(res += random_engine());
                 if (res > std::numeric_limits<uint32_t>::max()) {
                     res = 0;
                 }
             }
             // assert(res >= 0);
-            printf("%llu\n", res);
+            // printf("%llu\n", res);
         }
     }
     // printf("%llu\n", res);
@@ -37,13 +38,13 @@ static void bench_add_random_openmp(benchmark::State& state) {
             random_engine.seed(random_seed);
             uint64_t res = 0;
             for (size_t i = 0; i < ADD_NUM; ++i) {
-                res += random_engine();
+                benchmark::DoNotOptimize(res += random_engine());
                 if (res > std::numeric_limits<uint32_t>::max()) {
                     res = 0;
                 }
             }
             // assert(res >= 0);
-            printf("%llu\n", res);
+            // printf("%llu\n", res);
         }
     }
     // printf("%llu\n", res);
