@@ -33,6 +33,9 @@ strlen_test:
 current_inc:
 	g++ current_inc_benchmark.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o current_inc_benchmark -lbenchmark $(FOLLY_DEPS) -lpthread
 
+lock_guard_uniq_lock:
+	g++ lock_guard_uniq_lock.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -o lock_guard_uniq_lock -lbenchmark $(FOLLY_DEPS) -lpthread
+
 eigen_bench:
 	g++ eigen_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -Wno-unused-variable -o eigen_bench -lbenchmark $(EIGEN_INC)
 
@@ -55,3 +58,4 @@ clean:
 	-rm string_ret_bench
 	-rm eigen_bench 
 	-rm time_eigen_product 
+	-rm lock_guard_uniq_lock
