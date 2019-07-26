@@ -13,6 +13,27 @@ public:
         printf("%s\n", oss.str().c_str());
     }
 };
+
+enum COLOR{
+    RED = 0,
+    BLUE = 0,
+    YEL = 0,
+};
+template<COLOR c>
+class TestL {
+public:
+    void work() {
+        printf("value is %d\n", c);
+    }
+};
+
+template<int T>
+class TestT {
+public:
+    void work() {
+        printf("value is %d\n", T);
+    }
+};
 int main() {
     TestC<int, 10> tc;
     tc.work();
@@ -21,6 +42,10 @@ int main() {
     using TestD = TestC<int, 10>;
     const char* TestD10 = "abc";
     printf("%s\n", TCON(TestD, 10));
+    TestT<100> t;
+    t.work();
+    TestL<RED> tr;
+    tr.work();
     return 0;
 }
 

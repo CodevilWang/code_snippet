@@ -8,5 +8,8 @@ openmp_helloworld:
 	$(CXX) openmp_helloworld.cpp  -o openmp_helloworld $(OPMP_FLAGS) $(INC) $(LIB) 
 openmp_pi:
 	$(CXX) pi_cal.cpp  -o pi_cal $(OPMP_FLAGS) $(INC) $(LIB) 
+openmp_condition:
+	$(CXX) openmp_for_condition.cpp  -o openmp_for_condition $(OPMP_FLAGS) $(INC) $(LIB) 
 clean:
 	@rm openmp_test
+	@rm openmp_for_condition
