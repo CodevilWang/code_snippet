@@ -4,13 +4,17 @@
 #include <vector>
 #include <type_traits>
 #include <boost/any.hpp>
+enum GET_TYPE{
+    GET_VALUE = 0,
+    GET_POINTER = 1,
+};
 class MyAny {
 public:
     template<typename T>
     void set(T p, typename std::enable_if<!std::is_pointer<T>::value>::type* = 0) {
         _any_value = p;
     }
-    template<typename T>
+    template<typename T, GET_TYPE GET_VALUE>
     void get(T* p, typename std::enable_if<!std::is_pointer<T>::value>::type* = 0) {
         *p = boost::any_cast<T>(_any_value);
     }
@@ -39,11 +43,20 @@ public:
         }
         _any_value = p;
         _destr = destr;
+        return true;
     }
     template<typename T>
     bool get(T* ret, typename std::enable_if<std::is_pointer<T>::value>::type* = 0) {
         printf("in only pointer get\n");
-        *ret = *(boost::any_cast<T>(&_any_value));
+        *ret = boost::any_cast<T>(_any_value);
+        return true;
+    }
+
+    template<typename T, GET_TYPE GET_POINTER>
+    bool get(T** ret, typename std::enable_if<!std::is_pointer<T>::value>::type* = 0) {
+        printf("in only value get\n");
+        *ret = boost::any_cast<T>(&_any_value);
+        printf("cur %p\n", *ret);
         return true;
     }
 private:
@@ -85,20 +98,47 @@ int main() {
     int* pointer = NULL;
     ma.get(&pointer);
     printf("%d\n", *pointer);
-    // ma.set(*data);
-    // int p = 0;
-    // ma.get(&p);
-    // printf("%d\n", p);
-    // int** pointer = boost::any_cast<int*>(&ma.get());
-    // printf("%d\n", **pointer); 
+    ma.set(*data);
+    int p = 0;
+    ma.get<int, GET_VALUE>(&p);
+    printf("%d\n", p);
     printf("double pointer check.\n");
+    MyAny mb;
     int* pp = new int(102);
-    if (!ma.set(&pp)) {
+    if (!mb.set(&pp)) {
         return 0;
     }
     int** ppp = NULL;
-    ma.get(&ppp);
+    mb.get(&ppp);
     printf("%d\n", **ppp);
+
+    int* new_dat = new int(100);
+    boost::any cur;
+    cur = new_dat;
+    int* dat = boost::any_cast<int*>(cur);
+    printf("%d\n", *dat);
+
+    MyAny mc;
+    mc.set(100);
+    int mc_dat;
+    mc.get<int, GET_VALUE>(&mc_dat);
+    printf("%d\n", mc_dat);
+
+    int mc_int = 103;
+    mc.set(mc_int);
+    int* mc_dat_p = nullptr;
+    mc.get<int, GET_POINTER>(&mc_dat_p);
+    printf("%d\n", *mc_dat_p);
+
+    TA a_ta;
+    mc.set(a_ta);
+    TA* a_tc_p = nullptr;
+    mc.get<TA, GET_POINTER>(&a_tc_p);
+    a_tc_p->work();
+
+    TA b_tc;
+    mc.get<TA, GET_VALUE>(&b_tc);
+    b_tc.work();
     return 0;
 }
 

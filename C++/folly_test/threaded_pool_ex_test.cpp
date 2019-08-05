@@ -10,6 +10,15 @@ void work() {
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     printf("after sleep 10000 ms\n");
 }
+int work2() {
+    printf("after sleep2 10000 ms\n");
+    return 1;
+}
+int work3(int a) {
+
+    printf("after sleep3 %d\n", a);
+    return 1;
+}
 int main() {
     // work(10);
     printf("heer\n");
@@ -22,8 +31,10 @@ int main() {
 #endif
     th_ex.add(folly::Function<void()>(work));
     th_ex.add(folly::Function<void()>(work));
-    th_ex.add(folly::Function<void()>(work));
-    th_ex.add(folly::Function<void()>(work));
+    // th_ex.add(folly::Function<void()>(work));
+    // th_ex.add(folly::Function<void()>(work));
+    th_ex.add(folly::Function<int()>(work2));
+    th_ex.add(folly::Function<int()>(work3));
     // th_ex.add(work(3000));
     // th_ex.add(work(2000));
     // th_ex.add(work(5000));
