@@ -42,6 +42,9 @@ eigen_bench:
 time_eigen_product:
 	g++ time_eigen_product.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -Wno-unused-variable -o time_eigen_product $(EIGEN_INC) -mavx
 
+mv_bench:
+	g++ mv_bench.cpp $(COMMON_FLAGS) $(OPENMP_FLAGS) -Wno-unused-variable -o mv_bench -lbenchmark $(EIGEN_INC) -mavx
+
 clean:
 	-rm vector_bench
 	-rm openmp_bench
@@ -59,3 +62,4 @@ clean:
 	-rm eigen_bench 
 	-rm time_eigen_product 
 	-rm lock_guard_uniq_lock
+	-rm mv_bench 
