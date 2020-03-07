@@ -79,6 +79,18 @@ int main() {
 #endif
     printf("%s\n", d.phone_num().c_str());
     printf("%s\n", d.address().c_str());
+#ifdef USE_PB3
+    example::Contact newd;
+    newd = std::move(d);
+#else
+    example2::Contact newd;
+    newd = std::move(d);
+    assert(!d.has_phone_num());
+    assert(newd.has_phone_num());
+    d.set_phone_num("dssdf");
+    assert(d.has_phone_num());
+    assert(newd.phone_num() == "1324555");
+#endif
     return 0;
 }
 

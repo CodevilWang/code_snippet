@@ -7,15 +7,14 @@ enum ContactType {
 };
 
 message Contact {
-    required string phone_num = 1;
-    required string address = 2;
-    required ContactType ctype = 3; 
+    optional string phone_num = 1;
+    optional string address = 2;
+    optional ContactType ctype = 3; 
 };
 
 message Person {
-    required string name = 1;
-    required int32 id = 2;
+    optional string name = 1;
+    optional int32 id = 2;
     repeated int32 pid = 3;
-    required bytes contact = 4;
-    required int32 iD = 5;
+    optional bytes contact = 4;
 };
